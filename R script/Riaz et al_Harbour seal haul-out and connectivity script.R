@@ -341,11 +341,11 @@ duplicates_df <- AllHauloutData %>%
 setwd("C:/Users/a46027/OneDrive - Havforskningsinstituttet/Documents/Data/Harbour seal movement/Haulouts/ID Checks/")
 
 
-sf_raw <- QCedRAWDATA %>%                       # GPS fixes
+sf_raw <- QCedRAWDATA %>%                       
   # filter(Capture_site == "Jomfruland") %>%
   st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
 
-sf_frame <- AllHauloutData %>%                  # Haul‑out detections
+sf_frame <- AllHauloutData %>%                 
   # filter(Capture_site == "Jomfruland") %>%
   st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE) %>%
   group_by(id) %>% 
@@ -389,7 +389,7 @@ removals <- list(
   )
 )
 
-# Step 3: Remove the rows that match (id, Num) in the list
+
 sf_frame_cleaned <- sf_frame %>%
   filter(!purrr::map2_lgl(id, Num, function(x, y) y %in% removals[[x]] %||% FALSE))
 
@@ -412,7 +412,7 @@ sf_frame_cleaned <- sf_frame_cleaned %>%
   )
 
 
-# # loop over each id and build / save a map 
+# # loop over each id 
 # for (this_id in ids) {
 #   
 #   gps_pts   <- sf_raw   %>% filter(id == this_id)
@@ -421,7 +421,7 @@ sf_frame_cleaned <- sf_frame_cleaned %>%
 #   m <- leaflet() %>%
 #     addTiles() %>%
 #     
-#     ## GPS layer  (purple)
+#     ## GPS layer  
 #     addCircleMarkers(
 #       data        = gps_pts,
 #       lng         = ~lon, lat = ~lat,
@@ -431,7 +431,7 @@ sf_frame_cleaned <- sf_frame_cleaned %>%
 #       group       = "GPS"
 #     ) %>%
 #     
-#     ## Haul‑out layer (orange)  + tooltip / popup
+#     ## Haul‑out layer (orange)  
 # addCircleMarkers(
 #   data        = haul_pts,
 #   lng         = ~lon, lat = ~lat,
@@ -443,7 +443,7 @@ sf_frame_cleaned <- sf_frame_cleaned %>%
 #   group       = "Haul‑out"
 # )
 #     
-#     # ## simple two‑item legend
+#     # ## 
 #     # addLegend(
 #     #   position = "bottomright",
 #     #   # colors   = c(gps_col, haulout_col),
@@ -452,7 +452,7 @@ sf_frame_cleaned <- sf_frame_cleaned %>%
 #     # )
 #   
 #     
-#   ## save HTML (one per id)
+#   ## 
 #   file_name <- paste0("map_id_", this_id, ".html")
 #   saveWidget(m, file = file_name, selfcontained = TRUE)
 #   message("saved ", file_name)
@@ -2747,6 +2747,7 @@ ConceptualPlot
 # pdf("ConceptualFigure.pdf", width = 8, height = 8)
 # ConceptualPlot
 # dev.off()
+
 
 
 
