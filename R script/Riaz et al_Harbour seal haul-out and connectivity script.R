@@ -6,7 +6,7 @@
 
 # AUTHOR OF CODE: Javed Riaz
 
-# VERSION DATE: 25/11/2024 
+# VERSION DATE: 25/11/2025 
 
 ##############################################################################################################################################
 ##############################################################################################################################################
@@ -2097,75 +2097,6 @@ summary(cox_mod)
 # plot(SealSurvival$Weight, martingale_resid)
 
 
-###############################################################################################################################################
-# Cross validation exercise of the model
-##############################################################################################################################################
-
-
-regions <- levels(droplevels(SealSurvival$prev_region))
-
-
-# Loop over each model where there are difference reference levels
-coef_results <- map_dfr(regions, function(ref_level) {
-  SealSurvival$prev_region_relevel <- relevel(SealSurvival$prev_region, ref = ref_level) 
-  
-  mod <- coxme(Surv(SurvivalTime, Survival) ~ prev_region_relevel + Weight + (1 | NewID),
-               data = SealSurvival)
-  
-  coefs <- fixef(mod)
-  ses <- sqrt(diag(vcov(mod)))
-  
-  term_idx <- grep("prev_region_relevel", names(coefs))
-  
-  df <- tibble(
-    term = names(coefs)[term_idx],
-    estimate = coefs[term_idx],
-    std.error = ses[term_idx],
-    reference = ref_level
-  ) %>%
-    mutate(
-      term = gsub("prev_region_relevel", "", term),
-      comparison = paste(term, "vs", reference),
-      conf.low = estimate - 1.96 * std.error,
-      conf.high = estimate + 1.96 * std.error,
-      p.value = 2 * (1 - pnorm(abs(estimate / std.error))),
-      signif = p.value < 0.05
-    )
-  
-  return(df)
-})
-
-
-# Create the neat cross validation plot
-
-NewSup <- ggplot(coef_results, aes(x = term, y = estimate, color = signif)) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray60") +
-  geom_pointrange(aes(ymin = conf.low, ymax = conf.high), fatten = 2, size = 0.8) +
-  facet_wrap(~ reference, scales = "free_x", nrow = 2) +
-  scale_color_manual(values = c(`TRUE` = "#D55E00", `FALSE` = "#0072B2"),
-                     labels = c("FALSE", "TRUE"),
-                     name = "Statistical\nsignificance") +
-  labs(
-    title = "Cross-validation of CPH models",
-    subtitle = "Configured with different jurisdictions as the reference levels",
-    x = "Jurisdiction",
-    y = "Hazard Ratio"
-  ) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  theme(legend.position = "right")
-NewSup
-
-
-# tiff("Fig_S3.tiff", width = 9, height = 6, units = 'in', res = 300)
-# NewSup
-# dev.off()
-
-
-print(coef_results, n = nrow(coef_results))
-
-
-
 ##############################################################################################################################################
 ## Survival Curve Plotting
 ##############################################################################################################################################
@@ -3026,4 +2957,5 @@ write.csv(table3_network, "Table3_Network_Statistics.csv", row.names = FALSE)
 # # ConceptualPlot
 # # dev.off()
 # 
+
 
