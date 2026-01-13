@@ -8,6 +8,8 @@
 
 # VERSION DATE: 25/11/2025 
 
+## QUICK NOTE: Bathymetry files were too large to upload to Github. However, these data are publicly available and can be downloaded from EMODnet: https://emodnet.ec.europa.eu/en/bathymetry
+
 ##############################################################################################################################################
 ##############################################################################################################################################
 ##############################################################################################################################################
@@ -2957,5 +2959,6 @@ write.csv(table3_network, "Table3_Network_Statistics.csv", row.names = FALSE)
 # # ConceptualPlot
 # # dev.off()
 # 
+
 
 
